@@ -103,28 +103,23 @@ def main():
         
         st.subheader("데이터 수집 소스")
         
-        # Playwright 가용성 체크
-        try:
-            from playwright.sync_api import sync_playwright
-            playwright_available = True
-        except ImportError:
-            playwright_available = False
+        # Playwright 가용성 체크 (scraper 모듈에서 확인)
+        from scraper import PLAYWRIGHT_AVAILABLE
         
-        if not playwright_available:
-            st.warning("⚠️ 일부 소스는 제한됩니다 (Playwright 미설치)")
-            st.caption("로컬 실행 시 모든 기능 사용 가능")
+        if not PLAYWRIGHT_AVAILABLE:
+            st.warning("⚠️ 일부 소스는 제한됩니다")
+            st.caption("Playwright 미설치 또는 초기화 실패")
+        else:
+            st.success("✅ 모든 소스 사용 가능")
         
         source_moel = st.checkbox("고용노동부 보도자료", value=True)
         source_kosha = st.checkbox("산업안전포털 공지사항", value=True, 
-                                  disabled=not playwright_available,
-                                  help="Playwright 필요" if not playwright_available else None)
+                                  help="동적 페이지" if not PLAYWRIGHT_AVAILABLE else None)
         source_accident = st.checkbox("중대재해 발생알림", value=True,
-                                     disabled=not playwright_available,
-                                     help="Playwright 필요" if not playwright_available else None)
+                                     help="동적 페이지" if not PLAYWRIGHT_AVAILABLE else None)
         source_labor = st.checkbox("매일노동뉴스", value=True)
         source_bigkinds = st.checkbox("언론사 뉴스 검색", value=True,
-                                     disabled=not playwright_available,
-                                     help="Playwright 필요" if not playwright_available else None)
+                                     help="동적 페이지" if not PLAYWRIGHT_AVAILABLE else None)
         
         st.subheader("뉴스 검색 키워드")
         keywords = st.text_input("키워드", value="산업안전 중대재해", 

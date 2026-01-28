@@ -8,11 +8,25 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from typing import List, Dict
 import time
+import os
+import subprocess
 
 # Playwright는 선택적으로 import
 try:
     from playwright.sync_api import sync_playwright
     PLAYWRIGHT_AVAILABLE = True
+    
+    # Streamlit Cloud에서 자동으로 브라우저 설치
+    if not os.path.exists(os.path.expanduser("~/.cache/ms-playwright")):
+        print("🔄 Playwright 브라우저 설치 중...")
+        try:
+            subprocess.run(["playwright", "install", "chromium", "--with-deps"], 
+                         check=True, capture_output=True)
+            print("✅ Playwright 브라우저 설치 완료")
+        except Exception as e:
+            print(f"⚠️ Playwright 브라우저 설치 실패: {e}")
+            PLAYWRIGHT_AVAILABLE = False
+            
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
     print("⚠️ Playwright가 설치되지 않았습니다. 일부 사이트 수집이 제한됩니다.")
